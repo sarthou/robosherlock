@@ -278,7 +278,6 @@ bool UnrealVisionBridge::setData(uima::CAS &tcas, uint64_t ts)
   lockBuffer.unlock();
 
   // set transform and timestamp
-  uint64_t now = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
   ros::Time stamp;
   stamp.fromNSec(packet.header.timestampCapture);
   rs::SceneCas cas(tcas);
@@ -335,26 +334,26 @@ bool UnrealVisionBridge::setData(uima::CAS &tcas, uint64_t ts)
   cameraInfo.header.stamp = stamp;
   cameraInfo.height = packet.header.height;
   cameraInfo.width = packet.header.width;
-  
+
   cameraInfo.K.assign(0.0);
   cameraInfo.K[0] = cX / std::tan(halfFOVX);
   cameraInfo.K[2] = cX;
   cameraInfo.K[4] = cX / std::tan(halfFOVX); //pretty weird that this is true cY / std::tan(halfFOVY);
   cameraInfo.K[5] = cY;
   cameraInfo.K[8] = 1;
-  
+
   cameraInfo.R.assign(0.0);
   cameraInfo.R[0] = 1;
   cameraInfo.R[4] = 1;
   cameraInfo.R[8] = 1;
-  
+
   cameraInfo.P.assign(0.0);
   cameraInfo.P[0] = cameraInfo.K[0];
   cameraInfo.P[2] = cameraInfo.K[2];
   cameraInfo.P[5] = cameraInfo.K[4];
   cameraInfo.P[6] = cameraInfo.K[5];
   cameraInfo.P[10] = 1;
-  
+
   cameraInfo.distortion_model = "plumb_bob";
   cameraInfo.D.resize(5, 0.0);
 
@@ -431,9 +430,6 @@ bool UnrealVisionBridge::setData(uima::CAS &tcas, uint64_t ts)
   cas.set(VIEW_OBJECT_MAP, objectMap);
 
   //so we can run other annotators on the image
-
-
-
 
   return true;
 }

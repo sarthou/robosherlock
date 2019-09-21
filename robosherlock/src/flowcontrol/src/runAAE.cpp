@@ -131,8 +131,9 @@ int main(int argc, char *argv[])
   {
     //singl
     uima::ResourceManager &resourceManager = uima::ResourceManager::createInstance("RoboSherlock");
+    (void)resourceManager; // TODO verify if resourceManager is necessary
 
-    mongo::client::GlobalInstance instance; //this is a stupid thing we did now we suffer the consequences 
+    mongo::client::GlobalInstance instance; //this is a stupid thing we did now we suffer the consequences
     ros::AsyncSpinner spinner(0);
 
     engine = rs::createRSAggregateAnalysisEngine(analysis_engine_file, false);
@@ -154,7 +155,7 @@ int main(int argc, char *argv[])
       objDescr.obj_descriptions = obj_descriptions;
       result_pub_.publish(objDescr);
 
-      rate.sleep(); 
+      rate.sleep();
     }
 
   }

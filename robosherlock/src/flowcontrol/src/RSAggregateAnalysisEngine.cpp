@@ -506,6 +506,7 @@ RSAggregateAnalysisEngine *createRSAggregateAnalysisEngine(const std::string &ae
   }
 
   const uima::AnalysisEngineMetaData &data = engine->getAnalysisEngineMetaData();
+  (void)data; // TODO verify if data is necessary
 
   // Get a new CAS
   outInfo("Creating a new CAS");

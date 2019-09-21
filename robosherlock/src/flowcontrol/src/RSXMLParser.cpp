@@ -45,7 +45,7 @@ void RSXMLParser::parseAnalysisEngineDescription(uima::AnalysisEngineDescription
     parser.setDoSchema(false);
   }
   parser.setExternalSchemaLocation( uima::ResourceManager::getInstance().getSchemaInfo());
-  bool bHasOwnErrorHandler = false;
+  // bool bHasOwnErrorHandler = false;
 
   // if (iv_pXMLErrorHandler == NULL) {
   //   iv_pXMLErrorHandler = new XMLErrorHandler();
