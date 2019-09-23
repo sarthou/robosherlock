@@ -8,13 +8,23 @@ SWIPLInterface::SWIPLInterface()
   std::lock_guard<std::mutex> lock(lock_);
 
   int argc = 0;
-  argv[argc++] = "robosherlock";
-  argv[argc++] = "-f";
+  argv[argc] = new char[strlen("robosherlock") + 1];
+  strcpy(argv[argc],"robosherlock");
+  argc++;
+
+  argv[argc] = new char[strlen("-f") + 1];
+  strcpy(argv[argc],"-f");
+  argc++;
+
   std::string rosPrologInit = ros::package::getPath("robosherlock") + "/prolog/init_rs_internal.pl";
   argv[argc] = new char[rosPrologInit.size() + 1];
   std::copy(rosPrologInit.begin(), rosPrologInit.end(), argv[argc]);
   argv[argc++][rosPrologInit.size()] = '\0';
-  argv[argc++] = "-O";
+
+  argv[argc] = new char[strlen("-O") + 1];
+  strcpy(argv[argc],"-O");
+  argc++;
+
   argv[argc] = NULL;
   PL_initialise(argc, argv);
 
