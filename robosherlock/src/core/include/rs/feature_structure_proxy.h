@@ -674,7 +674,7 @@ public:
 
   void append(std::vector<T>& values)
   {
-    for (int i = 0; i < values.size(); ++i)
+    for (size_t i = 0; i < values.size(); ++i)
     {
       append(values[i]);
     }
@@ -901,7 +901,7 @@ public:
   void append(const std::vector<std::string>& value)
   {
     uima::StringListFS list = _get();
-    for (int i = 0; i < value.size(); ++i)
+    for (size_t i = 0; i < value.size(); ++i)
     {
       UnicodeString ustr = UnicodeString::fromUTF8(value[i]);
       list.addLast(ustr);
