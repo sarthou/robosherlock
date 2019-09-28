@@ -49,6 +49,10 @@ private:
   double pointSize;
   double normalsColor[3];
 
+  pcl::IntegralImageNormalEstimation< pcl::PointXYZRGBA, pcl::Normal> integral_image_ne;
+  pcl::NormalEstimation<pcl::PointXYZRGBA, pcl::Normal> ne;
+  pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr tree_ptr;
+
 private:
   bool useThermal, useRGB;
   bool receiveRGB;
@@ -90,6 +94,15 @@ public:
       ctx.extractValue("radiusSearch", radiusSearch);
     }
     setAnnotatorContext(ctx);
+
+    integral_image_ne.setNormalEstimationMethod(integral_image_ne.COVARIANCE_MATRIX);
+    integral_image_ne.setMaxDepthChangeFactor(0.02f);
+    integral_image_ne.setNormalSmoothingSize(10.0f);
+
+    tree_ptr = pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr(new pcl::search::KdTree<pcl::PointXYZRGBA>());
+    ne.setSearchMethod(tree_ptr);
+    ne.setRadiusSearch(radiusSearch);
+
     return UIMA_ERR_NONE;
   }
 /*
@@ -153,13 +166,14 @@ public:
       filter_NaN_points(cloud_ptr, normals_ptr, cloud_non_nan, normals_non_nan, non_NaN_ids.indices);
 
       normalsImg_ = cv::Mat::zeros(rgb_.size(), CV_32FC3);
-      for(int i = 0; i < non_NaN_ids.indices.size(); ++i)
+      for(const auto& indice : non_NaN_ids.indices)
       {
-        int x =  non_NaN_ids.indices[i] % rgb_.cols;
-        int y =  non_NaN_ids.indices[i] / rgb_.cols;
-        normalsImg_.at<cv::Vec3f>(y, x) = cv::normalize(cv::Vec3f(normals_ptr->points[non_NaN_ids.indices[i]].normal_x,
-                                          normals_ptr->points[non_NaN_ids.indices[i]].normal_y,
-                                          normals_ptr->points[non_NaN_ids.indices[i]].normal_z));
+        int x =  indice % rgb_.cols;
+        int y =  indice / rgb_.cols;
+        auto point = normals_ptr->points[indice];
+        normalsImg_.at<cv::Vec3f>(y, x) = cv::normalize(cv::Vec3f(point.normal_x,
+                                          point.normal_y,
+                                          point.normal_z));
       }
 
       rs::ReferenceClusterPoints rcp = rs::create<rs::ReferenceClusterPoints>(tcas);
@@ -174,21 +188,14 @@ public:
 
   void compute_normals_pcl(pcl::PointCloud< pcl::PointXYZRGBA>::Ptr &cloud_ptr, pcl::PointCloud< pcl::Normal>::Ptr &normals_ptr)
   {
-    pcl::IntegralImageNormalEstimation< pcl::PointXYZRGBA, pcl::Normal> ne;
-    ne.setNormalEstimationMethod(ne.COVARIANCE_MATRIX);
-    ne.setMaxDepthChangeFactor(0.02f);
-    ne.setNormalSmoothingSize(10.0f);
-    ne.setInputCloud(cloud_ptr);
-    ne.compute(*normals_ptr);
+    integral_image_ne.setInputCloud(cloud_ptr);
+    integral_image_ne.compute(*normals_ptr);
   }
 
   void compute_normals_unOrganizedCloud(pcl::PointCloud< pcl::PointXYZRGBA>::Ptr &cloud_ptr, pcl::PointCloud< pcl::Normal>::Ptr &normals_ptr)
   {
     pcl::NormalEstimation<pcl::PointXYZRGBA, pcl::Normal> ne;
     ne.setInputCloud(cloud_ptr);
-    pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZRGBA>());
-    ne.setSearchMethod(tree);
-    ne.setRadiusSearch(radiusSearch);
     outInfo("Normal Radius search = " << radiusSearch);
     ne.compute(*normals_ptr);
     outInfo("  Normal Cloud Size: " FG_BLUE << normals_ptr->points.size());
