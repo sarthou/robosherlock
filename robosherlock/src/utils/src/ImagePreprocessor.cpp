@@ -566,9 +566,11 @@ private:
     ImageSegmentation::segment(maskBorder, segments, 40000, 10000, roi);
 
     maskBorder = cv::Mat::zeros(depth.rows, depth.cols, CV_8U);
-    for(size_t i = 0; i < segments.size(); ++i)
+    const auto cv_rgb_white = CV_RGB(255, 255, 255);
+    const auto cv_rgb_black = CV_RGB(0, 0, 0);
+    for(auto& segment : segments)
     {
-      ImageSegmentation::drawSegment(maskBorder, CV_RGB(255, 255, 255), CV_RGB(0, 0, 0), segments[i]);
+      ImageSegmentation::drawSegment(maskBorder, cv_rgb_white, cv_rgb_black, segment);
     }
 
     cv::dilate(maskBorder, maskBorder, kernel, cv::Point(-1, -1), borderDilation, cv::BORDER_CONSTANT, 255);
@@ -730,4 +732,3 @@ private:
 
 // This macro exports an entry point that is used to create the annotator.
 MAKE_AE(ImagePreprocessor)
-
