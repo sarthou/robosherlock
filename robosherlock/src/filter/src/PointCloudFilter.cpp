@@ -55,6 +55,8 @@ private:
   cv::Mat rgb_;
   rs::TFListenerProxy transformListener;
 
+  pcl::PassThrough<PointT> x_filter_, y_filter_, z_filter_;
+
 public:
 
   PointCloudFilter(): DrawingAnnotator(__func__), pointSize(1)
@@ -80,6 +82,17 @@ public:
           ctx.extractValue("target_frame", target_frame);
       }
 
+    x_filter_.setKeepOrganized(true);
+    x_filter_.setFilterLimits(minX, maxX);
+    x_filter_.setFilterFieldName("x");
+
+    y_filter_.setKeepOrganized(true);
+    y_filter_.setFilterLimits(minY, maxY);
+    y_filter_.setFilterFieldName("y");
+
+    z_filter_.setKeepOrganized(true);
+    z_filter_.setFilterLimits(minZ, maxZ);
+    z_filter_.setFilterFieldName("z");
 
     return UIMA_ERR_NONE;
   }
@@ -116,22 +129,14 @@ public:
         cloud_transformed = cloud_ptr;
     }
 
-    pcl::PassThrough<PointT> pass;
-    pass.setInputCloud(cloud_transformed);
-    pass.setKeepOrganized(true);
-    pass.setFilterLimits(minX, maxX);
-    pass.setFilterFieldName("x");
-    pass.filter(*cloud_filtered);
+    x_filter_.setInputCloud(cloud_transformed);
+    x_filter_.filter(*cloud_filtered);
 
-    pass.setFilterLimits(minY, maxY);
-    pass.setInputCloud(cloud_filtered);
-    pass.setFilterFieldName("y");
-    pass.filter(*cloud_filtered);
+    y_filter_.setInputCloud(cloud_filtered);
+    y_filter_.filter(*cloud_filtered);
 
-    pass.setFilterLimits(minZ, maxZ);
-    pass.setInputCloud(cloud_filtered);
-    pass.setFilterFieldName("z");
-    pass.filter(*cloud_filtered);
+    z_filter_.setInputCloud(cloud_filtered);
+    z_filter_.filter(*cloud_filtered);
 
     pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>);
     if(was_transformed) {
