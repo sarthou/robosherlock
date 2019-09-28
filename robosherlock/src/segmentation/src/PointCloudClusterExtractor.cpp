@@ -392,10 +392,8 @@ private:
     {
       label.label = 0;
       input_labels->points.resize(cloud->points.size(), label);
-      for(size_t i = 0; i < prism_inliers->indices.size(); ++i)
-      {
-        input_labels->points[prism_inliers->indices[i]].label = 1;
-      }
+      for(size_t i = 0; i < plane_inliers->indices.size(); ++i)
+        input_labels->points[plane_inliers->indices[i]].label = 1;
     }
 
     pcl::PointCloud<pcl::Label>::Ptr output_labels(new pcl::PointCloud<pcl::Label>);
