@@ -269,9 +269,9 @@ inline bool computeDownsampleNormals(pcl::PointCloud<pcl::Normal>::Ptr &in_norma
       for(size_t pointIdIt = 0; pointIdIt < dsMap[dsPointId].size(); pointIdIt++)
       {
         int pointId = dsMap[dsPointId][pointIdIt];
-        if(pcl_isfinite(in_normals->points[pointId].normal_x) &&
-           pcl_isfinite(in_normals->points[pointId].normal_y) &&
-           pcl_isfinite(in_normals->points[pointId].normal_z))
+        if(std::isfinite(in_normals->points[pointId].normal_x) &&
+           std::isfinite(in_normals->points[pointId].normal_y) &&
+           std::isfinite(in_normals->points[pointId].normal_z))
         {
           dsNormX += in_normals->points[pointId].normal_x;
           dsNormY += in_normals->points[pointId].normal_y;
