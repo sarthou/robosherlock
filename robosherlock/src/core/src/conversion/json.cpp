@@ -40,7 +40,7 @@ namespace conversion
 #define FIELD_DATA   "_data"
 //#define FIELD_PARENT "_parent"
 
-static int ARRAY_SIZE_LIMIT = {20};
+static size_t ARRAY_SIZE_LIMIT = {20};
 //#define ARRAY_NATIVE_LIMIT 20 // Store array with a size smaller than ARRAY_NATIVE_LIMIT as native BSON arrays else as binary
 
 ///******************************************************************************

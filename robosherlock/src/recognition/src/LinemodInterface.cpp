@@ -185,7 +185,7 @@ void LinemodInterface::writeModel(const std::string &filename, const std::vector
   cv::FileStorage fs(filename, cv::FileStorage::WRITE);
 
   fs << "classes" << "[";
-  for(int i = 0; i < classIds.size(); ++i)
+  for(size_t i = 0; i < classIds.size(); ++i)
   {
     fs << "{";
     detector->writeClass(classIds[i], fs);

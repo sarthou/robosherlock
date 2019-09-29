@@ -179,7 +179,7 @@ public:
     cas.get(VIEW_CLOUD, *input_cloud_rgb); // Fill input data for 3D tracking
     pcl::copyPointCloud(*input_cloud_rgb, *input_cloud);
     std::vector<int> input_indices;
-    if(!input_cloud->size() > 0)
+    if((!input_cloud->size()) > 0)
     {
       outError("Input cloud is empty.");
     }
@@ -204,7 +204,7 @@ public:
         }
         int obj_id = s.height.get();
 
-        if (clusters.size() <= obj_id)
+        if ((int)clusters.size() <= obj_id)
         {
           outError("An object of id " + std::to_string(obj_id) + " does not exist. "
                                                                  "There are only " + std::to_string(clusters.size())
@@ -298,7 +298,7 @@ public:
       }
       else
       {
-        if (!target_cloud->size() > 0)
+        if ((!target_cloud->size()) > 0)
         {
           outError("Target cloud is empty.");
         }
@@ -364,7 +364,7 @@ public:
 
   void fillVisualizerWithLock(pcl::visualization::PCLVisualizer &visualizer, const bool FIRST_RUN)
   {
-    if (!particle_cloud->size() > 0)
+    if ((!particle_cloud->size()) > 0)
     {
       outError("Particle result cloud is empty.");
     }

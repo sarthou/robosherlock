@@ -42,7 +42,7 @@ public:
   }
 
   ~CollectionReader(){
-  } 
+  }
 
   void readAndSetData(uima::CAS &tcas, uint64_t timestamp = std::numeric_limits<uint64_t>::max())
   {
@@ -70,7 +70,7 @@ public:
     //look for packages dependent on core and find their full path
     std::vector<std::string> child_packages;
     ros::package::command("depends-on robosherlock", child_packages);
-    for(int i = 0; i < child_packages.size(); ++i)
+    for(size_t i = 0; i < child_packages.size(); ++i)
     {
       searchPaths.push_back(ros::package::getPath(child_packages[i]) + configDir);
     }
@@ -145,4 +145,3 @@ public:
 
 
 #endif
-

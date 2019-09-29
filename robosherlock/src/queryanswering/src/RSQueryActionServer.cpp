@@ -43,7 +43,7 @@ std::string* RSQueryActionServer::objectDesignator_to_jsonString(const robosherl
   // adding color filter to query
   if (comma && objPtr->obj.color.size() > 0)
     query.append(",");
-  for (int i = 0; i < objPtr->obj.color.size(); i++)
+  for (size_t i = 0; i < objPtr->obj.color.size(); i++)
   {
     comma = true;
     query.append("\"color\":");
@@ -55,9 +55,9 @@ std::string* RSQueryActionServer::objectDesignator_to_jsonString(const robosherl
   }
 
   // adding shape filter to query
-  if (comma && objPtr->obj.shape.size() > 0)
+  if (comma && (objPtr->obj.shape.size() > 0))
     query.append(",");
-  for (int i = 0; i < objPtr->obj.shape.size(); i++)
+  for (size_t i = 0; i < objPtr->obj.shape.size(); i++)
   {
     comma = true;
     query.append("\"shape\":");
@@ -69,9 +69,9 @@ std::string* RSQueryActionServer::objectDesignator_to_jsonString(const robosherl
   }
 
   // adding poseSource filter to query
-  if (comma && objPtr->obj.poseSource.size() > 0)
+  if (comma && (objPtr->obj.poseSource.size() > 0))
     query.append(",");
-  for (int i = 0; i < objPtr->obj.poseSource.size(); i++)
+  for (size_t i = 0; i < objPtr->obj.poseSource.size(); i++)
   {
     comma = true;
     query.append("\"cad-model\":");
@@ -157,9 +157,11 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
   if (answer.HasMember("rs.annotation.Classification"))
   {
     if (answer["rs.annotation.Classification"].IsArray())
+    {
       // only consider the first class
-      for (int i = 0; i < answer["rs.annotation.Classification"].GetArray().Size(); i++)
+      for (size_t i = 0; i < answer["rs.annotation.Classification"].GetArray().Size(); i++)
         objPtr->type = answer["rs.annotation.Classification"][i]["classname"].GetString();
+    }
     else
     {
       objPtr->type = answer["rs.annotation.Classification"]["classname"].GetString();
@@ -170,9 +172,11 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
     if (answer.HasMember("rs.annotation.Detection"))
     {
       if (answer["rs.annotation.Detection"].IsArray())
+      {
         // only consider the first class
-        for (int i = 0; i < answer["rs.annotation.Detection"].GetArray().Size(); i++)
+        for (size_t i = 0; i < answer["rs.annotation.Detection"].GetArray().Size(); i++)
           objPtr->type = answer["rs.annotation.Detection"][i]["name"].GetString();
+      }
       else
       {
         objPtr->type = answer["rs.annotation.Detection"]["name"].GetString();
@@ -184,9 +188,11 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
   if (answer.HasMember("rs.annotation.SemanticSize"))
   {
     if (answer["rs.annotation.SemanticSize"].IsArray())
+    {
       // only consider the first size
-      for (int i = 0; i < answer["rs.annotation.SemanticSize"].GetArray().Size(); i++)
+      for (size_t i = 0; i < answer["rs.annotation.SemanticSize"].GetArray().Size(); i++)
         objPtr->size = answer["rs.annotation.SemanticSize"][i]["size"].GetString();
+    }
     else
     {
       objPtr->size = answer["rs.annotation.SemanticSize"]["size"].GetString();
@@ -197,9 +203,11 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
   if (answer.HasMember("rs.annotation.SemanticLocation"))
   {
     if (answer["rs.annotation.SemanticLocation"].IsArray())
+    {
       // only consider the first location
-      for (int i = 0; i < answer["rs.annotation.SemanticLocation"].GetArray().Size(); i++)
+      for (size_t i = 0; i < answer["rs.annotation.SemanticLocation"].GetArray().Size(); i++)
         objPtr->location = answer["rs.annotation.SemanticLocation"][i]["location"].GetString();
+    }
     else
     {
       objPtr->location = answer["rs.annotation.SemanticLocation"]["location"].GetString();
@@ -210,8 +218,10 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
   if (answer.HasMember("rs.annotation.SemanticColor"))
   {
     if (answer["rs.annotation.SemanticColor"].IsArray())
-      for (int i = 0; i < answer["rs.annotation.SemanticColor"].GetArray().Size(); i++)
+    {
+      for (size_t i = 0; i < answer["rs.annotation.SemanticColor"].GetArray().Size(); i++)
         objPtr->color.push_back(answer["rs.annotation.SemanticColor"][i]["color"].GetString());
+    }
     else
     {
       objPtr->color.push_back(answer["rs.annotation.SemanticColor"]["color"].GetString());
@@ -221,8 +231,10 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
   if (answer.HasMember("rs.annotation.Shape"))
   {
     if (answer["rs.annotation.Shape"].IsArray())
-      for (int i = 0; i < answer["rs.annotation.Shape"].GetArray().Size(); i++)
+    {
+      for (size_t i = 0; i < answer["rs.annotation.Shape"].GetArray().Size(); i++)
         objPtr->shape.push_back(answer["rs.annotation.Shape"][i]["shape"].GetString());
+    }
     else
     {
       objPtr->shape.push_back(answer["rs.annotation.Shape"]["shape"].GetString());
@@ -236,7 +248,7 @@ robosherlock_msgs::ObjectDesignator* RSQueryActionServer::jsonString_to_objectDe
     {
       // resize pose array
       objPtr->pose.resize(answer["rs.annotation.PoseAnnotation"].GetArray().Size());
-      for (int i = 0; i < answer["rs.annotation.PoseAnnotation"].GetArray().Size(); i++)
+      for (size_t i = 0; i < answer["rs.annotation.PoseAnnotation"].GetArray().Size(); i++)
       {
         if (answer["rs.annotation.PoseAnnotation"][i].HasMember("world"))
         {
@@ -397,7 +409,7 @@ void RSQueryActionServer::executeQuery(const robosherlock_msgs::RSQueryGoalConst
       // query answer and status
       status = "Result Processing: 75% completion";
       RSQueryActionServer->sendFeedback(status);
-      for (int i = 0; i < resString.size(); i++)
+      for (size_t i = 0; i < resString.size(); i++)
       {
         result.res.push_back(*(RSQueryActionServer->jsonString_to_objectDesignator(resString[i])));
       }

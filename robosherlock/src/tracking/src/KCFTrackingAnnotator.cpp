@@ -106,7 +106,7 @@ public:
       result_pub = nh_.advertise<robosherlock_msgs::RSObjectDescriptions>(std::string("result_advertiser"), 1);
 
       scene.identifiables.filter(clusters);
-      if (!frame.rows > 0)
+      if ((!frame.rows) > 0)
       {
         outError("Visual input is empty. Has VIEW_COLOR_IMAGE been filled?");
         return UIMA_ERR_NONE;
@@ -121,15 +121,15 @@ public:
       }
       int obj_id = s.height.get();
 
-      if (clusters.size() <= obj_id)
+      if ((int)clusters.size() <= obj_id)
       {
         outError("An object of id " + std::to_string(obj_id) + " does not exist. "
                                                                "There are only " + std::to_string(clusters.size())
                                                                + " potential objects in the scene.");
         return UIMA_ERR_NONE;
       }
-      
-      //surround with a try catch block 
+
+      //surround with a try catch block
       rs::ImageROI image_roi = clusters[obj_id].rois.get();
       cv::Rect roi;
       rs::conversion::from(image_roi.roi_hires(), roi);

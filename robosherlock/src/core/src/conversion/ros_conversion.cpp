@@ -89,7 +89,7 @@ void from(const uima::FeatureStructure& fs, sensor_msgs::CameraInfo& output)
 
   tmp = cam.distortion_model.get();
   output.distortion_model.resize(tmp.size());
-  for (int i = 0; i < tmp.size(); ++i)
+  for (size_t i = 0; i < tmp.size(); ++i)
   {
     output.distortion_model[i] = tmp[i];
   }
@@ -103,19 +103,19 @@ void from(const uima::FeatureStructure& fs, sensor_msgs::CameraInfo& output)
   }
 
   vec = cam.r.get();
-  for (int i = 0; i < output.R.size() && i < vec.size(); ++i)
+  for (size_t i = 0; (i < output.R.size()) && (i < vec.size()); ++i)
   {
     output.R[i] = vec[i];
   }
 
   vec = cam.p.get();
-  for (int i = 0; i < output.P.size() && i < vec.size(); ++i)
+  for (size_t i = 0; (i < output.P.size()) && (i < vec.size()); ++i)
   {
     output.P[i] = vec[i];
   }
 
   vec = cam.k.get();
-  for (int i = 0; i < output.K.size() && i < vec.size(); ++i)
+  for (size_t i = 0; (i < output.K.size()) && i < (vec.size()); ++i)
   {
     output.K[i] = vec[i];
   }
@@ -137,7 +137,7 @@ uima::FeatureStructure to(uima::CAS& cas, const sensor_msgs::CameraInfo& input)
   cam.header.set(to(cas, input.header));
 
   tmp.resize(input.distortion_model.size());
-  for (int i = 0; i < tmp.size(); ++i)
+  for (size_t i = 0; i < tmp.size(); ++i)
   {
     tmp[i] = input.distortion_model[i];
   }
@@ -149,21 +149,21 @@ uima::FeatureStructure to(uima::CAS& cas, const sensor_msgs::CameraInfo& input)
   cam.d.set(input.D);
 
   vec.resize(input.R.size());
-  for (int i = 0; i < input.R.size(); ++i)
+  for (size_t i = 0; i < input.R.size(); ++i)
   {
     vec[i] = input.R[i];
   }
   cam.r.set(vec);
 
   vec.resize(input.P.size());
-  for (int i = 0; i < input.P.size(); ++i)
+  for (size_t i = 0; i < input.P.size(); ++i)
   {
     vec[i] = input.P[i];
   }
   cam.p.set(vec);
 
   vec.resize(input.K.size());
-  for (int i = 0; i < input.K.size(); ++i)
+  for (size_t i = 0; i < input.K.size(); ++i)
   {
     vec[i] = input.K[i];
   }
