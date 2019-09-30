@@ -156,24 +156,25 @@ public:
   std::vector<WorldPose> compute_world_poses(std::vector<rs::ObjectHypothesis> thisClusters, tf::StampedTransform vp,
       CAS &tcas)
   {
+    rs::SceneCas cas(tcas);
+    pcl::PointCloud<pcl::PointXYZRGBA> pointCloud;
+    cas.get(VIEW_CLOUD, pointCloud);
+
     std::vector<WorldPose> thisClustersPose;
-    for(int i = 0; i < thisClusters.size(); i++)
+    for(size_t i = 0; i < thisClusters.size(); i++)
     {
-      rs::SceneCas cas(tcas);
       rs::ObjectHypothesis cluster = thisClusters.at(i);
 
       tf::Vector3 btCentroid;
       if(cluster.points.has() && cluster.points().type() == rs::type<ReferenceClusterPoints>(tcas))
       {
-        pcl::PointCloud<pcl::PointXYZRGBA> pointCloud;
         pcl::PointIndices indices;
 
         ReferenceClusterPoints cp(cluster.points());
 
-        cas.get(VIEW_CLOUD, pointCloud);
         indices.indices = cp.indices.get().indices.get();
         float x = 0, y = 0, z = 0;
-        for(int i = 0; i < indices.indices.size() - 1; i++)
+        for(size_t i = 0; i < indices.indices.size() - 1; i++)
         {
           x += pointCloud.points[indices.indices[i]].x;
           y += pointCloud.points[indices.indices[i]].y;
@@ -185,13 +186,10 @@ public:
       }
       else if(cluster.points.has() && cluster.points().type() == rs::type<StandaloneClusterPoints>(tcas))
       {
-        pcl::PointCloud<pcl::PointXYZRGBA> pointCloud;
-
         StandaloneClusterPoints cp(cluster.points());
 
-        cas.get(VIEW_CLOUD, pointCloud);
         float x = 0, y = 0, z = 0;
-        for(int i = 0; i < pointCloud.points.size(); i++)
+        for(size_t i = 0; i < pointCloud.points.size(); i++)
         {
           x += pointCloud.points[i].x;
           y += pointCloud.points[i].y;
@@ -218,7 +216,7 @@ public:
     if(lastClustersPose.empty())
     {
       outDebug("First iteration, assigning new cluster ids to all clusters");
-      for(int i = 0; i < thisClustersPose.size(); i++)
+      for(size_t i = 0; i < thisClustersPose.size(); i++)
       {
         thisClustersPose[i].trackingID = nextID++;
         rs::Tracking annotation = rs::create<rs::Tracking>(tcas);
@@ -229,14 +227,14 @@ public:
     }
     else
     {
-      int thisSize = thisClustersPose.size();
-      int lastSize = lastClustersPose.size();
+      size_t thisSize = thisClustersPose.size();
+      size_t lastSize = lastClustersPose.size();
 
       Eigen::MatrixXf distances(thisSize, lastSize); //For debug purposes
       queue q;
-      for(int i = 0; i < thisSize; i++)
+      for(size_t i = 0; i < thisSize; i++)
       {
-        for(int j = 0; j < lastSize; j++)
+        for(size_t j = 0; j < lastSize; j++)
         {
           float d = (thisClustersPose[i].worldPose - lastClustersPose[j].worldPose).length2();
           outDebug(d);
@@ -250,15 +248,15 @@ public:
 
       std::vector<bool> thisAssigned(thisSize);
       std::vector<bool> lastAssigned(lastSize);
-      for(int i = 0; i < thisSize; i++)
+      for(size_t i = 0; i < thisSize; i++)
       {
         thisAssigned[i] = false;
       }
-      for(int i = 0; i < lastSize; i++)
+      for(size_t i = 0; i < lastSize; i++)
       {
         lastAssigned[i] = false;
       }
-      int no_assigned = 0;
+      size_t no_assigned = 0;
       while(!q.empty() && no_assigned < thisSize)
       {
         outDebug("Assigning Clusters ");
@@ -294,7 +292,7 @@ public:
       }
       outDebug("Assigning new id to new clusters");
       if(no_assigned <= thisSize)
-        for(int i = 0; i < thisSize; i++)
+        for(size_t i = 0; i < thisSize; i++)
         {
           rs::Tracking annotation = rs::create<rs::Tracking>(tcas);
           if(!thisAssigned[i])
@@ -345,7 +343,7 @@ public:
       }
     }
 
-    for(int i = 0; i < lastClustersPose.size(); i++)
+    for(size_t i = 0; i < lastClustersPose.size(); i++)
     {
       outDebug("last cluster pose " << i << " : " << lastClustersPose[i].trackingID);
     }
