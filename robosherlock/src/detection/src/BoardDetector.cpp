@@ -89,7 +89,7 @@ public:
 
     // Create world points
     pointsWorld = cv::Mat(boardRows * boardCols, 3, CV_32F);
-    for(size_t r = 0; r < pointsWorld.rows; ++r)
+    for(size_t r = 0; r < (size_t)pointsWorld.rows; ++r)
     {
       float *it = pointsWorld.ptr<float>(r);
       *it++ = boardDistX * (r % boardCols);

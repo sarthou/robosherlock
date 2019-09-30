@@ -65,7 +65,7 @@ private:
 
   int neighborNumber;
 
-  int numSegmentation;
+  size_t numSegmentation;
 
   bool isSetup;
 public:
@@ -80,7 +80,7 @@ public:
                   int minClusterSize,
                   int maxClusterSize,
                   int neighborNumber,
-                  int numSegmentation);
+                  size_t numSegmentation);
 
   void setInputClouds(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
                       pcl::PointCloud<pcl::Normal>::Ptr normals);

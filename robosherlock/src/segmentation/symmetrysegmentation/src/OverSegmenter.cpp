@@ -36,7 +36,7 @@
                                 int minClusterSize,
                                 int maxClusterSize,
                                 int neighborNumber,
-                                int numSegmentation)
+                                size_t numSegmentation)
 {
   this->minNormalThreshold = minNormalThreshold;
   this->maxNormalThreshold = maxNormalThreshold;

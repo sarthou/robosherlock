@@ -86,7 +86,7 @@ private:
   double pointSize;
 
   // params
-  int min_plane_inliers, max_iterations;
+  size_t min_plane_inliers, max_iterations;
   float distance_threshold, max_curvature, angular_threshold_deg;
 
   std::string pathToModelFile;
@@ -663,7 +663,7 @@ private:
       disp = cv::Mat::zeros(image_.rows, image_.cols, CV_8UC3);
       return;
     }
-    else if (foundPlane && image_.size().area() != cloud->size())
+    else if (foundPlane && (image_.size().area() != cloud->size()))
     {
       disp = cv::Mat::zeros(480, 640, CV_8UC3);
       return;
