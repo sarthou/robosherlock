@@ -83,7 +83,7 @@ namespace uima {
   UIMA_EXC_CLASSIMPLEMENT(IncompatibleParentTypesException, Exception);
   UIMA_EXC_CLASSIMPLEMENT(CASIncompatibilityException, Exception);
 
-  
+
   AnalysisEngineMetaData const & AnalysisEngine::getAnalysisEngineMetaData() const {
     assert( EXISTS(getAnnotatorContext().getTaeSpecifier().getAnalysisEngineMetaData()) );
     return *getAnnotatorContext().getTaeSpecifier().getAnalysisEngineMetaData();
@@ -174,14 +174,14 @@ namespace uima {
   }
 
 
-  /**  
+  /**
    * All variants of creating a TAE will eventually be mapped to this call.
-   * Depending on the context, memory ownership over the different objects passed to this 
+   * Depending on the context, memory ownership over the different objects passed to this
    * method may vary, thus the boolean parameters.
    * Toplevel TAEs alwasy own the ANC and the CAS Definition but if they are created
-   * with an external TAESpec (see API calls for createTextAnalysisEngine()), they don't 
+   * with an external TAESpec (see API calls for createTextAnalysisEngine()), they don't
    * own this object. On the other hand, delegate AEs never own neither the ANC, the TAESpec
-   * or the CASDefinition. 
+   * or the CASDefinition.
    */
   /*static*/ AnalysisEngine * Framework::createAnalysisEngine(AnnotatorContext & rANC,
       bool bOwnsANC,
@@ -248,7 +248,7 @@ namespace uima {
 	  }
 
     /*static*/
-  /**   
+  /**
    * create a TAE from a file name or an XML buffer (depending on first argument).
    */
   AnalysisEngine * Framework::createAnalysisEngine(bool bIsFilename,
@@ -262,12 +262,12 @@ namespace uima {
       }
 
       /*
-      We use quite a lot of auto_ptrs here because many of those methods can go wrong
+      We use quite a lot of unique_ptrs here because many of those methods can go wrong
       and throw exceptions but we still want to clean up all the memory we used thus far.
       */
-      
+
 	  XMLParser builder;
-      auto_ptr<AnalysisEngineDescription> apTAESpecifier( new AnalysisEngineDescription() );
+      std::unique_ptr<AnalysisEngineDescription> apTAESpecifier( new AnalysisEngineDescription() );
       if (apTAESpecifier.get() == NULL) {
         rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
         return NULL;
@@ -277,7 +277,7 @@ namespace uima {
         builder.parseAnalysisEngineDescription(* apTAESpecifier.get(), crString);
       } else {
         /*
-           Some XML4C routines which have to do wiht parsing an in-memory 
+           Some XML4C routines which have to do wiht parsing an in-memory
            buffer don't work, so this is why we don't call
              builder.buildTaeFromMemory(* apTAESpecifier.get(), crString);
            here but rather create a temp file.
@@ -300,7 +300,7 @@ namespace uima {
       apTAESpecifier->validate();
       apTAESpecifier->commit();
 
-      auto_ptr<AnnotatorContext> apANC( new AnnotatorContext(apTAESpecifier.get()) );
+      std::unique_ptr<AnnotatorContext> apANC( new AnnotatorContext(apTAESpecifier.get()) );
       if (apANC.get() == NULL) {
         rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
         return NULL;
@@ -308,8 +308,8 @@ namespace uima {
 
       assert( EXISTS(apANC.get()) );
 
-      auto_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(*apANC.get()) );
-      // release auto_ptrs here because the createTAE transfers ownership to the engine
+      std::unique_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(*apANC.get()) );
+      // release unique_ptr here because the createTAE transfers ownership to the engine
       //  Warning: this could cause a memory leak if the createTAE() method coudl not create
       //           the actual engine object.     suhre 02/11/03
       apTAESpecifier.release();
@@ -317,7 +317,7 @@ namespace uima {
                                      true,
                                      * apCASDef.release(), true,
                                      rErrorInfo);
-           
+
       return pResult;
     } catch (Exception & rExc) {
       rErrorInfo = rExc.getErrorInfo();
@@ -341,12 +341,12 @@ namespace uima {
 
     /*static*/
   TextAnalysisEngine * TextAnalysisEngine::createTextAnalysisEngine(UChar const * cpBuffer, size_t uiLength, ErrorInfo & rErrorInfo) {
-    
+
 	  return (TextAnalysisEngine*)Framework::createAnalysisEngine(cpBuffer,uiLength, rErrorInfo);
   }
 
     /*static*/
-  AnalysisEngine * Framework::createAnalysisEngine(UChar const * cpBuffer, 
+  AnalysisEngine * Framework::createAnalysisEngine(UChar const * cpBuffer,
 				size_t uiLength, ErrorInfo & rErrorInfo) {
     // read-only constructor of unicode string
     icu::UnicodeString usXMLBuffer(false, cpBuffer, uiLength);
@@ -354,7 +354,7 @@ namespace uima {
   }
 
     /*static*/
-  TextAnalysisEngine * TextAnalysisEngine::createTextAnalysisEngine(AnalysisEngineDescription & crAEDesc, 
+  TextAnalysisEngine * TextAnalysisEngine::createTextAnalysisEngine(AnalysisEngineDescription & crAEDesc,
 									ErrorInfo & rErrorInfo) {
 		return (TextAnalysisEngine*) Framework::createAnalysisEngine(crAEDesc, rErrorInfo);
   }
@@ -368,7 +368,7 @@ namespace uima {
         return NULL;
       }
 
-      auto_ptr<AnnotatorContext> apANC( new AnnotatorContext(& crTAESpec) );
+      std::unique_ptr<AnnotatorContext> apANC( new AnnotatorContext(& crTAESpec) );
       if (apANC.get() == NULL) {
         rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
         return NULL;
@@ -376,8 +376,8 @@ namespace uima {
 
       assert( EXISTS(apANC.get()) );
 
-      auto_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(*apANC.get()) );
-      // release auto_ptrs here because the createTAE transfers ownership to the engine
+      std::unique_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(*apANC.get()) );
+      // release unique_ptr here because the createTAE transfers ownership to the engine
       //  Warning: this could cause a memory leak if the createTAE() method coudl not create (construct)
       //           the actual engine object.     suhre 02/11/03
        AnalysisEngine * pResult = createAnalysisEngine(*apANC.release(), true,
@@ -448,7 +448,7 @@ namespace uima {
     XMLParser builder;
     AnalysisEngineMetaData * pAe = new AnalysisEngineMetaData();
 	TypeSystemDescription * tsDesc = new TypeSystemDescription();
-	
+
 	UnicodeString ufn(crFileName);
     size_t uiLen = ufn.length();
     auto_array<UChar> arBuffer( new UChar[uiLen + 1] );
@@ -461,7 +461,7 @@ namespace uima {
 	builder.parseTypeSystemDescription(*tsDesc, fileIS);
     pAe->setTypeSystemDescription(tsDesc);
 
-    auto_ptr<AnalysisEngineMetaData> apSpecifier(pAe  );
+    std::unique_ptr<AnalysisEngineMetaData> apSpecifier(pAe  );
     if (apSpecifier.get() == NULL) {
       rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
       return NULL;
@@ -486,7 +486,7 @@ namespace uima {
 	builder.parseTypeSystemDescription(*tsDesc,memIS);
     pAe->setTypeSystemDescription(tsDesc);
 
-    auto_ptr<AnalysisEngineMetaData> apSpecifier(pAe  );
+    std::unique_ptr<AnalysisEngineMetaData> apSpecifier(pAe  );
     if (apSpecifier.get() == NULL) {
       rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
       return NULL;
@@ -507,7 +507,7 @@ namespace uima {
 	builder.parseTypeSystemDescription(*tsDesc, memIS);
     pAe->setTypeSystemDescription(tsDesc);
 
-    auto_ptr<AnalysisEngineMetaData> apSpecifier(pAe  );
+    std::unique_ptr<AnalysisEngineMetaData> apSpecifier(pAe  );
     if (apSpecifier.get() == NULL) {
       rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
       return NULL;
@@ -522,7 +522,7 @@ namespace uima {
 
   //create CAS with specified typesystem and only built in indices
   CAS * Framework::createCAS(TypeSystem & typesystem, ErrorInfo& rErrorInfo) {
-    auto_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(typesystem) );
+    std::unique_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(typesystem) );
     if (apCASDef.get() == NULL) {
       rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
       return NULL;
@@ -537,7 +537,7 @@ namespace uima {
 
   //create CAS with specified typesystem and indices/typePriorities defined in the AE descriptor
   CAS * Framework::createCAS(TypeSystem & typesystem, AnalysisEngineMetaData & aeDesc, ErrorInfo & rErrorInfo) {
-    auto_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(typesystem, aeDesc) );
+    std::unique_ptr<uima::internal::CASDefinition> apCASDef( uima::internal::CASDefinition::createCASDefinition(typesystem, aeDesc) );
     if (apCASDef.get() == NULL) {
       rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
       return NULL;
@@ -551,7 +551,7 @@ namespace uima {
                              AnalysisEngineMetaData::TyVecpFSIndexDescriptions & fsIndexDesc,
                              AnalysisEngineMetaData::TyVecpTypePriorities  & prioDesc,
                              ErrorInfo & rErrorInfo)  {
-    auto_ptr<uima::internal::CASDefinition>
+    std::unique_ptr<uima::internal::CASDefinition>
     apCASDef( uima::internal::CASDefinition::createCASDefinition(typesystem, fsIndexDesc, prioDesc) );
     if (apCASDef.get() == NULL) {
       rErrorInfo.setErrorId(UIMA_ERR_ENGINE_OUT_OF_MEMORY);
@@ -568,7 +568,7 @@ namespace uima {
     UnicodeStringRef usRef(cpBuffer, uiLength);
     XMLParser builder;
     TypeSystemDescription * tsDesc = new TypeSystemDescription();
-    MemBufInputSource memIS((XMLByte const *) usRef.asUTF8().c_str(), 
+    MemBufInputSource memIS((XMLByte const *) usRef.asUTF8().c_str(),
 		                     usRef.asUTF8().length(), "sysID");
 	builder.parseTypeSystemDescription(*tsDesc,memIS);
     return tsDesc;
@@ -602,8 +602,3 @@ namespace uima {
 
 
 /* ----------------------------------------------------------------------- */
-
-
-
-
-
