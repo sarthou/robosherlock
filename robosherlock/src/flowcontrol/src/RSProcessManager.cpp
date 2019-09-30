@@ -346,7 +346,7 @@ bool RSProcessManager::handleQuery(std::string &request, std::vector<std::string
       use_identity_resolution_ ? dw.setMode(rs::ObjectDesignatorFactory::Mode::OBJECT) : dw.setMode(rs::ObjectDesignatorFactory::Mode::CLUSTER);
       dw.getObjectDesignators(result_designators);
 
-      for(int a = 0; a < result_designators.size(); a++)
+      for(size_t a = 0; a < result_designators.size(); a++)
         outInfo(result_designators[a]);
       outInfo("result_designators has ended.");
 
@@ -354,7 +354,7 @@ bool RSProcessManager::handleQuery(std::string &request, std::vector<std::string
       std::vector<bool> designators_to_keep;
       query_interface_->filterResults(result_designators, filtered_response, designators_to_keep);
       int obj_id = -1;
-      for(int n = 0; n < designators_to_keep.size(); n++)
+      for(size_t n = 0; n < designators_to_keep.size(); n++)
       {
         if(designators_to_keep[n])
         {
@@ -469,19 +469,19 @@ bool RSProcessManager::drawResultsOnImage(const std::vector<bool> &filter,
   request.Parse(requestJson.c_str());
   if(request.IsObject() && request.HasMember("obj-part"))
   {
-    for(int i = 0; i < clusters.size(); ++i)
+    for(size_t i = 0; i < clusters.size(); ++i)
     {
       rs::ObjectHypothesis &cluster = clusters[i];
       std::vector<rs::ClusterPart> parts;
       cluster.annotations.filter(parts);
-      for(int pIdx = 0; pIdx < parts.size(); ++pIdx)
+      for(size_t pIdx = 0; pIdx < parts.size(); ++pIdx)
       {
         rs::ClusterPart &part = parts[pIdx];
         if(part.name() == request["obj-part"] || request["obj-part"] == "")
         {
           pcl::PointIndices indices;
           rs::conversion::from(part.indices(), indices);
-          for(int iIdx = 0; iIdx < indices.indices.size(); ++iIdx)
+          for(size_t iIdx = 0; iIdx < indices.indices.size(); ++iIdx)
           {
             int idx = indices.indices[iIdx];
             rgb.at<cv::Vec3b>(cv::Point(idx % cam_info.width, idx / cam_info.width)) =
@@ -535,7 +535,7 @@ bool RSProcessManager::highlightResultsInCloud(const std::vector<bool> &filter,
     return false;
   }
 
-  for(int i = 0; i < filter.size(); ++i)
+  for(size_t i = 0; i < filter.size(); ++i)
   {
     if(!filter[i])
       continue;
@@ -549,7 +549,7 @@ bool RSProcessManager::highlightResultsInCloud(const std::vector<bool> &filter,
       if(clusters[i].points.has())
       {
         rs::conversion::from(((rs::ReferenceClusterPoints)clusters[i].points()).indices(), *inliers);
-        for(unsigned int idx = 0; idx < inliers->indices.size(); ++idx)
+        for(size_t idx = 0; idx < inliers->indices.size(); ++idx)
         {
           dispCloud->points[inliers->indices[idx]].rgba = rs::common::colors[colorIdx % rs::common::numberOfColors];
           dispCloud->points[inliers->indices[idx]].a = 255;
