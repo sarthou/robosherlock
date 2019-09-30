@@ -79,7 +79,7 @@ namespace uima {
 
   XMLParser::~XMLParser() {}
 
-  
+
   void XMLParser::setErrorHandler(ErrorHandler * pErrorHandler) {
     iv_pXMLErrorHandler = pErrorHandler;
   }
@@ -124,7 +124,7 @@ namespace uima {
       throw exc;
     }
 
-    LocalFileInputSource fileIS((XMLCh const *) arBuffer.get() ); 
+    LocalFileInputSource fileIS((XMLCh const *) arBuffer.get() );
     parseAnalysisEngineDescription(taeSpec, fileIS);
   }
 
@@ -141,7 +141,7 @@ namespace uima {
     }
     parser.setExternalSchemaLocation( ResourceManager::getInstance().getSchemaInfo());
     bool bHasOwnErrorHandler = false;
-    
+
     if (iv_pXMLErrorHandler == NULL) {
       iv_pXMLErrorHandler = new XMLErrorHandler();
       assert( EXISTS(iv_pXMLErrorHandler) );
@@ -149,17 +149,17 @@ namespace uima {
     }
 
     parser.setErrorHandler(iv_pXMLErrorHandler);
-    
+
     try {
       parser.parse( crInputSource );
     } catch (Exception e){
       if (bHasOwnErrorHandler) {
         delete iv_pXMLErrorHandler;
-        iv_pXMLErrorHandler = NULL; 
+        iv_pXMLErrorHandler = NULL;
       }
-      throw(e);      
+      throw(e);
     }
-    
+
     DOMDocument* doc = parser.getDocument();
     assert(EXISTS(doc));
 
@@ -196,7 +196,7 @@ namespace uima {
     } catch (Exception const & e){
       if (bHasOwnErrorHandler) {
         delete iv_pXMLErrorHandler;
-        iv_pXMLErrorHandler = NULL; 
+        iv_pXMLErrorHandler = NULL;
       }
       throw e;
     }
@@ -222,7 +222,7 @@ namespace uima {
 
   void XMLParser::parseFSIndexDescription(AnalysisEngineMetaData::TyVecpFSIndexDescriptions & fsDesc,
        InputSource const & crInputSource) {
-    
+
     XercesDOMParser parser;
     parser.setValidationScheme(XercesDOMParser::Val_Auto);
     parser.setDoNamespaces(true);
@@ -241,7 +241,7 @@ namespace uima {
     } catch (Exception const & e){
       if (bHasOwnErrorHandler) {
         delete iv_pXMLErrorHandler;
-        iv_pXMLErrorHandler = NULL; 
+        iv_pXMLErrorHandler = NULL;
       }
       throw e;
     }
@@ -261,7 +261,7 @@ namespace uima {
 
   void XMLParser::parseTypePriorities(AnalysisEngineMetaData::TyVecpTypePriorities  & prioDesc,
       InputSource const & crInputSource) {
-	
+
     XercesDOMParser parser;
     parser.setValidationScheme(XercesDOMParser::Val_Auto);
     parser.setDoNamespaces(true);
@@ -281,7 +281,7 @@ namespace uima {
     } catch (Exception const & e){
       if (bHasOwnErrorHandler) {
         delete iv_pXMLErrorHandler;
-        iv_pXMLErrorHandler = NULL; 
+        iv_pXMLErrorHandler = NULL;
       }
       throw e;
     }
@@ -323,7 +323,7 @@ namespace uima {
     } catch (Exception const & e){
       if (bHasOwnErrorHandler) {
         delete iv_pXMLErrorHandler;
-        iv_pXMLErrorHandler = NULL; 
+        iv_pXMLErrorHandler = NULL;
       }
       throw e;
     }
@@ -733,9 +733,9 @@ namespace uima {
     const icu::UnicodeString & xmlFileLoc) {
     assert(EXISTS(descElem));
     assert( XMLString::compareString(descElem->getNodeName(), convert(TAG_TYPE_SYSTEM_DESC)) == 0);
-    
+
     buildTypeSystemDesc(tsDesc, descElem);
-	
+
   }
 
   AnalysisEngineMetaData * XMLParser::buildAEMetaData(DOMElement * descElem,
@@ -811,7 +811,7 @@ namespace uima {
     return aeMetaData;
   }
 
- 
+
 
   void XMLParser::buildConfigParams(AnalysisEngineMetaData & aeMetaData,
       DOMElement * descElem) {
@@ -943,7 +943,7 @@ namespace uima {
                             UIMA_ERR_CONFIG_INVALID_XML_TAG,
                             errMsg,
                             UIMA_MSG_ID_EXCON_BUILD_TAE_SPEC,
-                            ErrorInfo::unrecoverable);        
+                            ErrorInfo::unrecoverable);
           **/
         }
       } else if (childTag.compare(TAG_CONFIG_PARAM_MANDATORY) == 0) {
@@ -980,8 +980,8 @@ namespace uima {
     return configParm;
   }
 
-  
- 
+
+
 
   void XMLParser::buildConfigParamSettings(AnalysisEngineMetaData & aeMetadata,
       DOMElement * descElem) {
@@ -1188,7 +1188,7 @@ namespace uima {
               continue;
             }
             bool takesMemoryOwnerShip;
-            auto_ptr<TypeDescription> desc( buildTypeDesc((DOMElement *) typeDescs->item(i)) );
+            std::unique_ptr<TypeDescription> desc( buildTypeDesc((DOMElement *) typeDescs->item(i)) );
             typeSystemDesc.addTypeDescription(desc.get(), takesMemoryOwnerShip);
             if (takesMemoryOwnerShip) {
               desc.release();
@@ -1197,7 +1197,7 @@ namespace uima {
         }
       } else if (childTag.compare(TAG_IMPORT_DESC) == 0) {
         bool takesMemoryOwnerShip;
-        auto_ptr<ImportDescription> desc( buildImportDesc((DOMElement *) children->item(j)) );
+        std::unique_ptr<ImportDescription> desc( buildImportDesc((DOMElement *) children->item(j)) );
         typeSystemDesc.addImportDescription(desc.get(), takesMemoryOwnerShip);
         if (takesMemoryOwnerShip) {
           desc.release();
@@ -1211,7 +1211,7 @@ namespace uima {
               continue;
             }
             bool takesMemoryOwnerShip;
-            auto_ptr<ImportDescription> desc( buildImportDesc((DOMElement *) importDescs->item(i)) );
+            std::unique_ptr<ImportDescription> desc( buildImportDesc((DOMElement *) importDescs->item(i)) );
             typeSystemDesc.addImportDescription(desc.get(), takesMemoryOwnerShip);
             if (takesMemoryOwnerShip) {
               desc.release();
@@ -1280,7 +1280,7 @@ namespace uima {
             if ((features->item(j))->getNodeType() != DOMNode::ELEMENT_NODE) {
               continue;
             }
-            auto_ptr<FeatureDescription> desc( buildFeatureDesc((DOMElement *) features->item(j)) );
+            std::unique_ptr<FeatureDescription> desc( buildFeatureDesc((DOMElement *) features->item(j)) );
             bool takesMemoryOwnership;
             typeDesc->addFeatureDescription(desc.get(), takesMemoryOwnership);
             if (takesMemoryOwnership) {
@@ -1296,7 +1296,7 @@ namespace uima {
             if ((allowedVals->item(j))->getNodeType() != DOMNode::ELEMENT_NODE) {
               continue;
             }
-            auto_ptr<AllowedValue> desc( buildAllowedValue((DOMElement *) allowedVals->item(j)) );
+            std::unique_ptr<AllowedValue> desc( buildAllowedValue((DOMElement *) allowedVals->item(j)) );
             bool takesMemoryOwnership;
             typeDesc->addAllowedValue(desc.get(), takesMemoryOwnership);
             if (takesMemoryOwnership) {
@@ -1470,7 +1470,7 @@ namespace uima {
 
             }
             /**bool takesMemoryOwnerShip;
-            auto_ptr<ImportDescription> desc( buildImportDesc((DOMElement *) importDescs->item(j)) );
+            std::unique_ptr<ImportDescription> desc( buildImportDesc((DOMElement *) importDescs->item(j)) );
             aeMetaData.addTypePriorityImportDescription(desc.get(), takesMemoryOwnerShip);
             if (takesMemoryOwnerShip) {
                 desc.release();
@@ -2350,10 +2350,10 @@ void XMLParser::buildFSIndexFromImportLocation(AnalysisEngineMetaData& fsDesc,
 		return NULL;
 	}
 	parseTypeSystemDescription(*tsDesc, memIS);
-    return tsDesc;	
+    return tsDesc;
   }
 
-  
+
   void TextAnalysisEngineSpecifierBuilder::buildTypePriorities(AnalysisEngineMetaData & aeMetaData,
 												DOMElement * descElem,
 												icu::UnicodeString const & xmlFileLoc,
@@ -2365,14 +2365,14 @@ void XMLParser::buildFSIndexFromImportLocation(AnalysisEngineMetaData& fsDesc,
   void TextAnalysisEngineSpecifierBuilder::buildTypePriorities(AnalysisEngineMetaData::TyVecpTypePriorities & vecpTypePriorities,
 												DOMElement * descElem) {
 	XMLParser::buildTypePriorities(vecpTypePriorities, descElem);
-  } 
+  }
 
 
   void TextAnalysisEngineSpecifierBuilder::buildFSIndexes(AnalysisEngineMetaData & aeMetaData,
 												DOMElement * descElem)   {
 	XMLParser::buildFSIndexes(aeMetaData, descElem);
   }
-     
+
 
   void TextAnalysisEngineSpecifierBuilder::buildFSIndexes(AnalysisEngineMetaData::TyVecpFSIndexDescriptions & vecFSIndexDesc,
 												DOMElement * descElem) {
@@ -2429,7 +2429,7 @@ void XMLParser::buildFSIndexFromImportLocation(AnalysisEngineMetaData& fsDesc,
   void TextAnalysisEngineSpecifierBuilder::buildFromXMLBuffer(AnalysisEngineMetaData::TyVecpTypePriorities  & prioDesc,
 												icu::UnicodeString const & xmlString) {
 	std::string xmlStr = UnicodeStringRef(xmlString).asUTF8();
-    MemBufInputSource memIS((XMLByte const *) xmlStr.c_str(), xmlStr.length(), "sysID");   
+    MemBufInputSource memIS((XMLByte const *) xmlStr.c_str(), xmlStr.length(), "sysID");
     parseTypePriorities(prioDesc, memIS);
   }
 
@@ -2442,9 +2442,9 @@ void XMLParser::buildFSIndexFromImportLocation(AnalysisEngineMetaData& fsDesc,
   }
 
 
-  
 
- 
+
+
   //----------------------------------------------------
   //
   //XMLParser private methods.
@@ -2707,5 +2707,5 @@ void XMLParser::buildFSIndexFromImportLocation(AnalysisEngineMetaData& fsDesc,
 
 
 
-  
+
 }

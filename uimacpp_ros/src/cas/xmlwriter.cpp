@@ -89,30 +89,30 @@ namespace uima {
     static UChar const uQUOT('"');
     static UChar const uCR('\r');
     static UChar const uLF('\n');
-    
+
     const UChar * srcPtr = in.getBuffer();
 
     for (int i=0; i < in.length(); i++) {
       switch (*srcPtr) {
-        case uAMP: 
+        case uAMP:
           out.append(ustrAMP_ESC);
           break;
-        case uGT: 
+        case uGT:
           out.append(ustrGT_ESC);
           break;
-        case uLT: 
+        case uLT:
           out.append(ustrLT_ESC);
           break;
-        case uAPOS: 
+        case uAPOS:
           out.append(ustrAPOS_ESC);
           break;
-        case uQUOT: 
+        case uQUOT:
           out.append(ustrQUOT_ESC);
           break;
-        case uCR: 
+        case uCR:
           out.append(ustrCR_ESC);
           break;
-        case uLF: 
+        case uLF:
           out.append(ustrLF_ESC);
           break;
         default:
@@ -334,7 +334,7 @@ namespace uima {
 
       uima::lowlevel::TyFSType tyIndexType = indexDef.getTypeForIndex(crIndexID);
       lowlevel::IndexABase const & crIndex = crIxRep.getLowlevelIndex(crIndexID, tyIndexType);
-      auto_ptr<uima::lowlevel::IndexIterator> pIterator(crIndex.createIterator());
+      std::unique_ptr<uima::lowlevel::IndexIterator> pIterator(crIndex.createIterator());
       for (pIterator->moveToFirst(); pIterator->isValid(); pIterator->moveToNext()) {
         lowlevel::TyFS tyFS = pIterator->get();
         writeFS(0, os, tyFS);
@@ -740,11 +740,3 @@ namespace uima {
 
 
 /* ----------------------------------------------------------------------- */
-
-
-
-
-
-
-
-

@@ -44,7 +44,7 @@ namespace uima {
     TyVecpFeatureDescriptions::iterator ite;
     for (ite = otherDescs.begin(); ite != otherDescs.end(); ite++) {
       bool takesMemoryOwnership;
-      auto_ptr<FeatureDescription> desc ( new FeatureDescription(**ite) );
+      std::unique_ptr<FeatureDescription> desc ( new FeatureDescription(**ite) );
       addFeatureDescription(desc.get(), takesMemoryOwnership);
       if (takesMemoryOwnership) {
         desc.release();
@@ -55,7 +55,7 @@ namespace uima {
     TyVecpAllowedValues::iterator ite1;
     for (ite1 = otherAllowedValues.begin(); ite1 != otherAllowedValues.end(); ite1++) {
       bool takesMemoryOwnership;
-      auto_ptr<AllowedValue> allowedval ( new AllowedValue(**ite1) );
+      std::unique_ptr<AllowedValue> allowedval ( new AllowedValue(**ite1) );
       addAllowedValue(allowedval.get(), takesMemoryOwnership);
       if (takesMemoryOwnership) {
         allowedval.release();
@@ -244,10 +244,10 @@ namespace uima {
         vecpImportByNameDescriptions.push_back(iv_vecpImportDescriptions[i]);
 		iv_vecpImportDescriptions[i] = 0;
       }
-	  
+
     }
     iv_vecpImportDescriptions.clear();
-	
+
     //add back the import by name descriptors
     for (size_t i=0; i < vecpImportByNameDescriptions.size(); i++) {
       iv_vecpImportDescriptions.push_back(vecpImportByNameDescriptions[i]);
@@ -418,4 +418,3 @@ namespace uima {
 
 
 }
-
