@@ -508,7 +508,7 @@ public:
     visualizer.addLine(pclOrigin, pclLineY, 0, 1, 0, "lineY");
     visualizer.addLine(pclOrigin, pclLineZ, 0, 0, 1, "lineZ");
 
-    for(int i = 0; i < orientedBoundingBoxes.size(); ++i)
+    for(size_t i = 0; i < orientedBoundingBoxes.size(); ++i)
     {
       OrientedBoundingBox &box = orientedBoundingBoxes[i];
       std::ostringstream oss;

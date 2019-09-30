@@ -211,7 +211,7 @@ private:
   {
     uima::ArrayFS array = cas.createArrayFS(input.size());
 
-    for (int i = 0; i < input.size(); ++i)
+    for (size_t i = 0; i < input.size(); ++i)
     {
       array.set(i, (uima::FeatureStructure)input[i]);
     }

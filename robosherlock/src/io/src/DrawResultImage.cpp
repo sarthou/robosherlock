@@ -114,19 +114,19 @@ public:
 
       if(shape.size() > 0) {
         outDebug("No. of Shape Annotations :" << shape.size());
-        for(int i = 0; i < shape.size(); ++i) {
+        for(size_t i = 0; i < shape.size(); ++i) {
           atoms.push_back(generateAtom("shape", index, shape[i].shape(), shape[i].confidence()));
         }
       }
       if(semSize.size() > 0) {
         outDebug("No. of SemanticSize Annotations :" << shape.size());
-        for(int i = 0; i < semSize.size(); ++i) {
+        for(size_t i = 0; i < semSize.size(); ++i) {
           atoms.push_back(generateAtom("size", index, semSize[i].size(), semSize[i].confidence()));
         }
       }
       if(color.size() > 0) {
         outDebug("No. of Color Annotations :" << color.size());
-        for(int i = 0; i < color.size(); ++i) {
+        for(size_t i = 0; i < color.size(); ++i) {
           std::string temp = color[i].color();
           float ratio  = color[i].ratio();
           atoms.push_back(generateAtom("color", index, color[i].color(), color[i].ratio()));
@@ -134,7 +134,7 @@ public:
       }
       if(goggles.size() > 0) {
         outDebug("No. of Goggles Annotations :" << goggles.size());
-        for(int i = 0; i < goggles.size(); ++i) {
+        for(size_t i = 0; i < goggles.size(); ++i) {
           std::stringstream predicate;
           if(goggles[i].category() != "") {
             predicate << "goggles_" << goggles[i].category();
@@ -149,7 +149,7 @@ public:
       }
       if(detections.size() > 0) {
         outDebug("No. of Detection annotations :" << detections.size());
-        for(int i = 0; i < detections.size(); ++i) {
+        for(size_t i = 0; i < detections.size(); ++i) {
           //          atom << "instance(c" << index << "," << detections[i].name() << ")";
           atoms.push_back(generateAtom("detection", index, detections[i].name() , detections[i].confidence()));
         }
@@ -211,7 +211,7 @@ private:
     rs::conversion::from(image_roi.roi_hires(), rect);
     cv::rectangle(dispRgb, rect, CV_RGB(255, 0, 0), 2);
     int offset = 15;
-    for(int32_t i = 0; i < atoms.size(); ++i) {
+    for(size_t i = 0; i < atoms.size(); ++i) {
       int baseLine;
       cv::Size textSize = cv::getTextSize(atoms[i], cv::FONT_HERSHEY_PLAIN, 0.9, 1, &baseLine);
       cv::putText(dispRgb, atoms[i], cv::Point(rect.x + (rect.width - textSize.width) / 2, rect.y - offset - textSize.height - i * 17), cv::FONT_HERSHEY_PLAIN, 0.8, CV_RGB(255, 255, 200), 1.0);
@@ -226,4 +226,3 @@ private:
 
 // This macro exports an entry point that is used to create the annotator.
 MAKE_AE(DrawResultImage)
-

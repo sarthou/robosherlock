@@ -52,7 +52,7 @@ void ImageSegmentation::segment(const cv::Mat &bin, std::vector<Segment> &segmen
 
   cv::findContours(bin.clone(), contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
-  for(int32_t i = 0; i < contours.size(); ++i)
+  for(size_t i = 0; i < contours.size(); ++i)
   {
     Segment seg;
     const int32_t parent = hierarchy[i][3];
@@ -271,7 +271,7 @@ void ImageSegmentation::drawSegments2D(cv::Mat &disp, const std::vector<Segment>
 {
   std::ostringstream oss;
 
-  for(int32_t i = 0; i < segments.size(); ++i)
+  for(size_t i = 0; i < segments.size(); ++i)
   {
     const Segment &seg = segments[i];
     drawSegment(disp, CV_RGB(128, 128, 128), CV_RGB(0, 0, 0), seg, 0, 1, true, sizeLine);
@@ -283,7 +283,7 @@ void ImageSegmentation::drawSegments2D(cv::Mat &disp, const std::vector<Segment>
     cv::line(disp, seg.center, seg.center + seg.axisY, CV_RGB(0, 255, 0), sizeLine);
   }
 
-  for(int32_t i = 0; i < text.size(); ++i)
+  for(size_t i = 0; i < text.size(); ++i)
   {
     const Segment &seg = segments[i];
 
@@ -300,7 +300,7 @@ void ImageSegmentation::drawSegments3D(cv::Mat &disp, const std::vector<Segment>
 {
   std::ostringstream oss;
 
-  for(int32_t i = 0; i < segments.size(); ++i)
+  for(size_t i = 0; i < segments.size(); ++i)
   {
     const Segment &seg = segments[i];
     drawSegment(disp, CV_RGB(255, 255, 255), CV_RGB(0, 0, 0), seg, 0, 1, false, sizeLine);
@@ -320,7 +320,7 @@ void ImageSegmentation::drawSegments3D(cv::Mat &disp, const std::vector<Segment>
     cv::line(disp, pointsImage[0], pointsImage[3], CV_RGB(0, 0, 255), sizeLine, CV_AA);
   }
 
-  for(int32_t i = 0; i < text.size(); ++i)
+  for(size_t i = 0; i < text.size(); ++i)
   {
     const Segment &seg = segments[i];
 

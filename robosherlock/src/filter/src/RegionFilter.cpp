@@ -613,7 +613,7 @@ private:
     visualizer.addLine(pclOrigin, pclLineY, 0, 1, 0, "lineY");
     visualizer.addLine(pclOrigin, pclLineZ, 0, 0, 1, "lineZ");
 
-    for (int i = 0; i < semanticMapItems_.size(); ++i)
+    for (size_t i = 0; i < semanticMapItems_.size(); ++i)
     {
       const SemanticMapItem& region = semanticMapItems_[i];
       if (std::find(regions_to_look_at_.begin(), regions_to_look_at_.end(), region.name) == regions_to_look_at_.end())

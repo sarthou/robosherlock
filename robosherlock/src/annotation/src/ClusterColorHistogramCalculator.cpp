@@ -366,7 +366,7 @@ private:
       cv::Mat hist = disp(roiHist);
 
       float start = 0;
-      for(int r = 0; r < ratios.size(); ++r)
+      for(size_t r = 0; r < ratios.size(); ++r)
       {
         float width = (histSize.width * ratios[r]);
         const cv::Rect rect(start + 0.5, 0, width + 0.5, histSize.height);
@@ -379,4 +379,3 @@ private:
 
 // This macro exports an entry point that is used to create the annotator.
 MAKE_AE(ClusterColorHistogramCalculator)
-

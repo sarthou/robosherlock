@@ -48,7 +48,7 @@ public:
         if(!transforms.empty())
         {
           ros::Time t = ros::Time::now();
-          for(int i = 0; i < transforms.size(); ++i)
+          for(size_t i = 0; i < transforms.size(); ++i)
           {
             transforms[i].stamp_ = t;
           }

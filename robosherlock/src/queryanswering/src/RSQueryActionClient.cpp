@@ -68,11 +68,11 @@ void RSQueryActionClient::prepareGoal(robosherlock_msgs::RSQueryGoal& goal)
    goal.obj.poseSource.push_back(valarrstr[i]);*/
 
   valarrstr = { "white" };
-  for (int i = 0; i < valarrstr.size(); i++)
+  for (size_t i = 0; i < valarrstr.size(); i++)
     goal.obj.color.push_back(valarrstr[i]);
 
   valarrstr = { "round" };
-  for (int i = 0; i < valarrstr.size(); i++)
+  for (size_t i = 0; i < valarrstr.size(); i++)
     goal.obj.shape.push_back(valarrstr[i]);
 
   // print goal for clarification

@@ -96,7 +96,7 @@ public:
       rs::conversion::from(((rs::ReferenceClusterPoints)cluster.points.get()).indices.get(), *clusterIndices);
       int countBorder = 0;
 
-      for(int j = 0; j < clusterIndices->indices.size(); ++j)
+      for(size_t j = 0; j < clusterIndices->indices.size(); ++j)
       {
         const int index = clusterIndices->indices[j];
         if(mask.at<uint8_t>(index))
