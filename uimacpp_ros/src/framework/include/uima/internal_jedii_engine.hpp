@@ -1,3 +1,5 @@
+#ifndef UIMA_INTERNAL_JEDII_ENGINE_HPP
+#define UIMA_INTERNAL_JEDII_ENGINE_HPP
 /** \file internal_jedii_engine.hpp .
 -----------------------------------------------------------------------------
 
@@ -103,7 +105,7 @@ namespace uima {
       int iv_isPrimitive;
 
       /**
-       * We load the Java DLL dynamically so the UIMACPP DLL does not have a 
+       * We load the Java DLL dynamically so the UIMACPP DLL does not have a
        * hard dependency to Java. This way, it can run also on a machine
        * where a JDK is not available.
        */
@@ -207,6 +209,4 @@ namespace uima {
 
 
 /* ----------------------------------------------------------------------- */
-
-
-
+#endif // UIMA_INTERNAL_JEDII_ENGINE_HPP
