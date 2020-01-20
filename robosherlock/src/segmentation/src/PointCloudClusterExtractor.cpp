@@ -88,7 +88,7 @@ private:
 
 public:
 
-  PointCloudClusterExtractor(): DrawingAnnotator(__func__), cluster_min_size(500), cluster_max_size(25000),
+  PointCloudClusterExtractor(): DrawingAnnotator(__func__), cluster_min_size(500), cluster_max_size(250000),
     polygon_min_height(0.02), polygon_max_height(0.5), cluster_tolerance(0.02), pointSize(1), mode(OEC)
   {
     cloud_ptr = pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);
@@ -392,8 +392,8 @@ private:
     {
       label.label = 0;
       input_labels->points.resize(cloud->points.size(), label);
-      for(size_t i = 0; i < plane_inliers->indices.size(); ++i)
-        input_labels->points[plane_inliers->indices[i]].label = 1;
+      for(size_t i = 0; i < prism_inliers->indices.size(); ++i)
+        input_labels->points[prism_inliers->indices[i]].label = 1;
     }
 
     pcl::PointCloud<pcl::Label>::Ptr output_labels(new pcl::PointCloud<pcl::Label>);
@@ -411,7 +411,7 @@ private:
     int good_clusters = 0;
     for(int i = 0 ; i < cluster_i.size(); ++i)
     {
-      if(cluster_i.at(i).indices.size() > cluster_min_size && cluster_i.at(i).indices.size() < cluster_max_size)
+      if((cluster_i.at(i).indices.size() > cluster_min_size) && (cluster_i.at(i).indices.size() < 100000))
       {
         good_clusters++;
         cluster_indices.push_back(cluster_i.at(i));
