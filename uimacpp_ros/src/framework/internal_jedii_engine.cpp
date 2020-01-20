@@ -1043,7 +1043,3 @@ namespace uima {
 
   }
 }
-
-
-
-

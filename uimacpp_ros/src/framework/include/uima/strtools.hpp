@@ -1982,4 +1982,3 @@ namespace uima {
 
 #endif /* UIMA_STRTOOLS_HPP */
 /* <EOF> */
-
